@@ -1,23 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
-
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { formData } from "./components/formData";
+import DynamicForm from "./components/form";
 function App() {
+  const [form, setForm] = useState(formData);
+  useEffect(() => {
+    getFormData();
+  }, []);
+  const getFormData = () => {
+    axios.get("http://192.168.0.131:3001/formData").then((response) => {
+      setForm(response.data);
+      console.log("Data", form);
+    });
+  };
+  const handleSubmission = (val) => {
+    console.log("Values : ", val);
+  };
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{ paddingLeft: 50 }}>
+      <h1>{form.formName}</h1>
+      <h2>{form.formDescription}</h2>
+      <DynamicForm fields={form.data} onSubmit={handleSubmission} />
     </div>
   );
 }
